@@ -32,6 +32,8 @@ The application will be built using the following technologies:
 
 *   **Backend Framework:** Laravel
 *   **Frontend:** Vue.js with TypeScript, managed with Inertia.js
+*   **UI Components:** PrimeVue
+*   **Styling:** Tailwind CSS (no Bootstrap)
 *   **Authentication & Scaffolding:** Laravel Jetstream
 *   **Admin Panel:** Filament
 *   **Database:** MySQL
