@@ -5,13 +5,17 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
+    return Inertia::render('Home', [ // Changed from 'Welcome' to 'Home'
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
 });
+
+Route::get('/professional', function () { // New route for Professional page
+    return Inertia::render('Professional');
+})->name('professional');
 
 Route::middleware([
     'auth:sanctum',
