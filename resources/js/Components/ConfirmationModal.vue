@@ -30,7 +30,7 @@ const close = () => {
         :closeable="closeable"
         @close="close"
     >
-        <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+        <template #header>
             <div class="sm:flex sm:items-start">
                 <div class="mx-auto shrink-0 flex items-center justify-center size-12 rounded-full bg-red-100 sm:mx-0 sm:size-10">
                     <svg class="size-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -42,16 +42,18 @@ const close = () => {
                     <h3 class="text-lg font-medium text-gray-900">
                         <slot name="title" />
                     </h3>
-
-                    <div class="mt-4 text-sm text-gray-600">
-                        <slot name="content" />
-                    </div>
                 </div>
             </div>
+        </template>
+
+        <div class="mt-4 text-sm text-gray-600">
+            <slot name="content" />
         </div>
 
-        <div class="flex flex-row justify-end px-6 py-4 bg-gray-100 text-end">
-            <slot name="footer" />
-        </div>
+        <template #footer>
+            <div class="flex flex-row justify-end px-6 py-4 bg-gray-100 text-end">
+                <slot name="footer" />
+            </div>
+        </template>
     </Modal>
 </template>

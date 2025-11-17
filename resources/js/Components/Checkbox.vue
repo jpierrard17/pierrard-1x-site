@@ -1,5 +1,6 @@
 <script setup>
 import { computed } from 'vue';
+import Checkbox from 'primevue/checkbox';
 
 const emit = defineEmits(['update:checked']);
 
@@ -25,12 +26,9 @@ const proxyChecked = computed({
 });
 </script>
 
-
 <template>
-    <input
+    <Checkbox
         v-model="proxyChecked"
-        type="checkbox"
         :value="value"
-        class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
-    >
+    />
 </template>

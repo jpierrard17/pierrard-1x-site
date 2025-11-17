@@ -1,13 +1,13 @@
 <script setup>
+import Message from 'primevue/message';
+
 defineProps({
     message: String,
 });
 </script>
 
 <template>
-    <div v-show="message">
-        <p class="text-sm text-red-600">
-            {{ message }}
-        </p>
-    </div>
+    <Message v-show="message" severity="error">
+        {{ message }}
+    </Message>
 </template>
