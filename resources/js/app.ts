@@ -8,7 +8,6 @@ import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 
 // PrimeVue imports
 import PrimeVue from 'primevue/config';
-import Tailwind from '@primevue/themes/tailwind';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -20,8 +19,7 @@ createInertiaApp({
             .use(plugin)
             .use(ZiggyVue)
             .use(PrimeVue, {
-                unstyled: true,
-                pt: Tailwind
+                unstyled: true
             })
             .mount(el);
     },
