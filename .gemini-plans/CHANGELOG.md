@@ -18,3 +18,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refactored Hevy models and migrations into a modular architecture (`app/Modules/Hevy`).
 - Updated `PLAN.md` to include architectural principles: Service-Oriented Controllers, Modular Integrations, and Flexible Visualizations.
 - Updated `PLAN.md` to include PrimeVue in the technology stack.
+
+### Fixed
+- Resolved Vite manifest error by correcting the main app entry file to `.ts` and fixing PrimeVue theme imports.

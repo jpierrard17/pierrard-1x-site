@@ -8,7 +8,7 @@ import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 
 // PrimeVue imports
 import PrimeVue from 'primevue/config';
-import 'primevue/resources/themes/lara-light-indigo/theme.css'; // Choose a theme
+import lara from '@primevue/themes/lara';
 import 'primeicons/primeicons.css'; // PrimeIcons
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
@@ -27,7 +27,11 @@ createInertiaApp({
         return createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(ZiggyVue)
-            .use(PrimeVue) // Use PrimeVue
+            .use(PrimeVue, {
+                theme: {
+                    preset: lara
+                }
+            }) // Use PrimeVue with theme
             .mount(el);
     },
     progress: {
