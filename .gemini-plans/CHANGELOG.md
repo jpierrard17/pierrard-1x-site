@@ -7,9 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Integrated PrimeVue component library and PrimeIcons.
+
 ### Changed
 - Updated `PLAN.md` to include architectural principles: Service-Oriented Controllers, Modular Integrations, and Flexible Visualizations.
-
-### Added
-- Initial `PLAN.md` for project architecture and roadmap, selecting Laravel, Vue, Inertia, and Filament.
-- Initial `CHANGELOG.md` to track changes.
+- Updated `PLAN.md` to include PrimeVue in the technology stack.
