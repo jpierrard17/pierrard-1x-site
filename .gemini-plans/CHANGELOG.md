@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Integrated PrimeVue component library and PrimeIcons.
+- Documented Hevy API endpoints and data structures (`hevy-plan.md`).
+- Documented Strava API endpoints and data structures (`strava-plan.md`).
 
 ### Changed
 - Updated `PLAN.md` to include architectural principles: Service-Oriented Controllers, Modular Integrations, and Flexible Visualizations.
