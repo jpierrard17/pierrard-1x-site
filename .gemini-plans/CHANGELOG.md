@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Installed and configured Filament admin panel.
 - Created remaining Hevy data models and migrations (`HevyRoutine`, `HevyRoutineExercise`, `HevyRoutineSet`, `HevyRoutineFolder`).
 - Created Strava data models and migrations (`StravaActivity`, `StravaGear`).
 - Integrated PrimeVue component library and PrimeIcons.
