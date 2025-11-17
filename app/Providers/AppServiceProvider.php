@@ -20,5 +20,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->loadMigrationsFrom(base_path('app/Modules/Hevy/Database/Migrations'));
+        $this->loadMigrationsFrom(base_path('app/Modules/Strava/Database/Migrations'));
     }
 }
