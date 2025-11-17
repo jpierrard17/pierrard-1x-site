@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Documented Strava API endpoints and data structures (`strava-plan.md`).
 
 ### Changed
+- Updated `PLAN.md` to reflect the completion of all data models and readiness for API integrations.
 - Refactored Hevy models and migrations into a modular architecture (`app/Modules/Hevy`).
 - Updated `PLAN.md` to include architectural principles: Service-Oriented Controllers, Modular Integrations, and Flexible Visualizations.
 - Updated `PLAN.md` to include PrimeVue in the technology stack.
