@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Created Strava data models and migrations (`StravaActivity`, `StravaGear`).
 - Integrated PrimeVue component library and PrimeIcons.
 - Documented Hevy API endpoints and data structures (`hevy-plan.md`).
 - Documented Strava API endpoints and data structures (`strava-plan.md`).
