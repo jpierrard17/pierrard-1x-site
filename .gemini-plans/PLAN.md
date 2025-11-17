@@ -82,5 +82,5 @@ This is a high-level roadmap tailored for the chosen Laravel stack.
 
 ## 6. Next Steps
 
-*   Flesh out the data models for the initial phase.
-*   Start with Phase 1: Project Setup.
+*   All data models and migrations for Hevy and Strava integrations are now complete.
+*   Proceed with Phase 3: API Integrations.
