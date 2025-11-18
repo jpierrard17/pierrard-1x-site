@@ -45,7 +45,7 @@ const disconnectHevy = () => {
                         Manage Hevy Integration
                     </h1>
 
-                    <div v-if="$page.props.flash.success" class="mb-4 font-medium text-sm text-green-600">
+                    <div v-if="$page.props.flash && $page.props.flash.success" class="mb-4 font-medium text-sm text-green-600">
                         {{ $page.props.flash.success }}
                     </div>
 
