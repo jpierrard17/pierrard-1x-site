@@ -21,6 +21,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Documented Strava API endpoints and data structures (`strava-plan.md`).
 
 ### Changed
+- Reconfigured `AppLayout.vue` to remove the default Laravel `ApplicationMark` from the left side of the navbar, and updated the user profile dropdown to be triggered by the user's profile photo.
+- Removed the default Laravel `ApplicationMark` from `GuestLayout.vue`.
+- Enabled Jetstream profile photo management by uncommenting `Features::profilePhotos()` in `config/jetstream.php`.
 - Refactored navigation to use `GuestLayout.vue` for unauthenticated users and `AppLayout.vue` for authenticated users, implementing specific link requirements.
 - Removed user registration functionality from the application.
 - Recreated database with the updated name `pierrard-1x-site` and re-ran all migrations.

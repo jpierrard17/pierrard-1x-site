@@ -42,13 +42,13 @@ const logout = () => {
                         <div class="flex">
                             <!-- Logo -->
                             <div class="shrink-0 flex items-center">
-                                <Link :href="route('home')"> <!-- Changed to home for unauthenticated users -->
-                                    <ApplicationMark class="block h-9 w-auto" />
+                                <Link :href="route('home')">
+                                    <!-- ApplicationMark removed -->
                                 </Link>
                             </div>
 
                             <!-- Navigation Links (Centered) -->
-                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                            <div class="hidden space-x-8 sm:-my-px sm:flex">
                                 <NavLink :href="route('home')" :active="route().current('home')">
                                     Home
                                 </NavLink>
@@ -102,7 +102,11 @@ const logout = () => {
                                 <div class="ms-3 relative">
                                     <Dropdown align="right" width="48">
                                         <template #trigger>
-                                            <span class="inline-flex rounded-md">
+                                            <button v-if="$page.props.jetstream.managesProfilePhotos" class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition">
+                                                <img class="size-8 rounded-full object-cover" :src="$page.props.auth.user.profile_photo_url" :alt="$page.props.auth.user.name">
+                                            </button>
+
+                                            <span v-else class="inline-flex rounded-md">
                                                 <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150">
                                                     {{ $page.props.auth.user.name }}
 
@@ -206,6 +210,10 @@ const logout = () => {
                         </template>
                         <template v-else>
                             <div class="flex items-center px-4">
+                                <div v-if="$page.props.jetstream.managesProfilePhotos" class="shrink-0 me-3">
+                                    <img class="size-10 rounded-full object-cover" :src="$page.props.auth.user.profile_photo_url" :alt="$page.props.auth.user.name">
+                                </div>
+
                                 <div>
                                     <div class="font-medium text-base text-gray-800">
                                         {{ $page.props.auth.user.name }}
