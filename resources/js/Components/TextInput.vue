@@ -13,11 +13,11 @@ const input = ref(null);
 
 onMounted(() => {
     if (props.autofocus) {
-        input.value.focus();
+        input.value.$el.focus();
     }
 });
 
-defineExpose({ focus: () => input.value.focus() });
+defineExpose({ focus: () => input.value.$el.focus() });
 </script>
 
 <template>
