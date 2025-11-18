@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `PLAN.md` to include PrimeVue in the technology stack.
 
 ### Fixed
+- Resolved Integrations dropdown alignment issue in `AppLayout.vue`.
 - Resolved Ziggy error by explicitly naming the home route (`/`) as 'home' in `routes/web.php`.
 - Resolved `MYSQL_EXTRA_OPTIONS` warning in Sail by defining the variable in the `.env` and `.env.example` files.
 - Resolved Vite manifest error by correcting the main app entry file to `.ts` and fixing PrimeVue theme imports.
