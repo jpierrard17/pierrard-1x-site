@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Created `Integrations.vue`, `Integrations/Hevy.vue`, and `Integrations/Strava.vue` placeholder components.
+- Added routes for `/integrations`, `/integrations/hevy`, and `/integrations/strava` within the authenticated middleware group.
+- Updated `AppLayout.vue` to include an "Integrations" dropdown with "Hevy" and "Strava" links.
 - Created `GuestLayout.vue` for public pages and updated `Home.vue` and `Professional.vue` to use it.
 - Created public Home and Professional pages with their respective routes.
 - Installed and configured Filament admin panel.

@@ -24,4 +24,17 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
+
+    // Integrations Routes
+    Route::get('/integrations', function () {
+        return Inertia::render('Integrations');
+    })->name('integrations');
+
+    Route::get('/integrations/hevy', function () {
+        return Inertia::render('Integrations/Hevy');
+    })->name('integrations.hevy');
+
+    Route::get('/integrations/strava', function () {
+        return Inertia::render('Integrations/Strava');
+    })->name('integrations.strava');
 });
