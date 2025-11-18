@@ -10,7 +10,7 @@ Route::get('/', function () {
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
-});
+})->name('home');
 
 Route::get('/professional', function () { // New route for Professional page
     return Inertia::render('Professional');
