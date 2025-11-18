@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Documented Strava API endpoints and data structures (`strava-plan.md`).
 
 ### Changed
+- Refactored navigation to use `GuestLayout.vue` for unauthenticated users and `AppLayout.vue` for authenticated users, implementing specific link requirements.
+- Removed user registration functionality from the application.
 - Recreated database with the updated name `pierrard-1x-site` and re-ran all migrations.
 - Updated database name to `pierrard-1x-site` in `.env` and `.env.example`.
 - Refactored core Jetstream Vue components to use PrimeVue components (`PrimaryButton`, `SecondaryButton`, `DangerButton`, `TextInput`, `Checkbox`, `InputError`, `Modal`, `DialogModal`, `ConfirmationModal`).
