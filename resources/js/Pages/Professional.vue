@@ -117,7 +117,7 @@ const resumeData = {
 
                     <!-- Hero Section -->
                     <section class="text-center mb-12">
-                        <img src="https://via.placeholder.com/150" alt="Profile Photo" class="rounded-full mx-auto mb-4 size-32 object-cover border-4 border-indigo-500 shadow-lg">
+                        <img :src="$page.props.auth.user.profile_photo_url" :alt="resumeData.name" class="rounded-full mx-auto mb-4 size-32 object-cover border-4 border-indigo-500 shadow-lg">
                         <h1 class="text-4xl font-extrabold text-gray-900 mb-2">{{ resumeData.name }}</h1>
                         <p class="text-xl text-indigo-600 font-semibold mb-4">{{ resumeData.title }}</p>
                         <p class="text-gray-700 max-w-2xl mx-auto leading-relaxed">{{ resumeData.summary }}</p>

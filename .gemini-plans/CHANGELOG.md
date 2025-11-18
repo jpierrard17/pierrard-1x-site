@@ -36,6 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `PLAN.md` to include PrimeVue in the technology stack.
 
 ### Fixed
+- Resolved profile photo not loading on the Professional page by using the dynamic `$page.props.auth.user.profile_photo_url`.
 - Resolved `TypeError: can't access property "name", s.$page.props.auth.user is null` in `AppLayout.vue` by conditionally rendering navigation elements based on user authentication status.
 - Resolved navigation issue where authenticated users were seeing guest navigation on Home and Professional pages by reverting `Home.vue` and `Professional.vue` to use `AppLayout.vue`.
 - Resolved Integrations dropdown alignment issue in `AppLayout.vue`.
