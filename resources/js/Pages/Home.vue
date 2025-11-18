@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import GuestLayout from '@/Layouts/GuestLayout.vue';
+import AppLayout from '@/Layouts/AppLayout.vue';
 import Welcome from '@/Components/Welcome.vue';
 </script>
 
 <template>
-    <GuestLayout title="Home">
+    <AppLayout title="Home">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Home
@@ -18,5 +18,5 @@ import Welcome from '@/Components/Welcome.vue';
                 </div>
             </div>
         </div>
-    </GuestLayout>
+    </AppLayout>
 </template>

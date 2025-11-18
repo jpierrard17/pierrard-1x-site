@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import GuestLayout from '@/Layouts/GuestLayout.vue';
+import AppLayout from '@/Layouts/AppLayout.vue';
 
 </script>
 
 <template>
-    <GuestLayout title="Professional">
+    <AppLayout title="Professional">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Professional
@@ -26,5 +26,5 @@ import GuestLayout from '@/Layouts/GuestLayout.vue';
                 </div>
             </div>
         </div>
-    </GuestLayout>
+    </AppLayout>
 </template>
