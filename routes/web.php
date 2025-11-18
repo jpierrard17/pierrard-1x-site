@@ -1,5 +1,6 @@
 <?php
 
+use App\Modules\Hevy\Http\Controllers\HevyController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -30,9 +31,10 @@ Route::middleware([
         return Inertia::render('Integrations');
     })->name('integrations');
 
-    Route::get('/integrations/hevy', function () {
-        return Inertia::render('Integrations/Hevy');
-    })->name('integrations.hevy');
+    // Hevy Integration Routes
+    Route::get('/integrations/hevy', [HevyController::class, 'index'])->name('integrations.hevy');
+    Route::post('/integrations/hevy/api-key', [HevyController::class, 'storeApiKey'])->name('integrations.hevy.store-api-key');
+    Route::post('/integrations/hevy/disconnect', [HevyController::class, 'disconnect'])->name('integrations.hevy.disconnect');
 
     Route::get('/integrations/strava', function () {
         return Inertia::render('Integrations/Strava');
