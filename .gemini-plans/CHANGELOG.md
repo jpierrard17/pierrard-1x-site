@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Documented Strava API endpoints and data structures (`strava-plan.md`).
 
 ### Changed
+- Transformed `Professional.vue` into a personal portfolio and CV page, incorporating detailed information from the user's resume.
 - Reconfigured `AppLayout.vue` to remove the default Laravel `ApplicationMark` from the left side of the navbar, and updated the user profile dropdown to be triggered by the user's profile photo.
 - Removed the default Laravel `ApplicationMark` from `GuestLayout.vue`.
 - Enabled Jetstream profile photo management by uncommenting `Features::profilePhotos()` in `config/jetstream.php`.
@@ -35,6 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `PLAN.md` to include PrimeVue in the technology stack.
 
 ### Fixed
+- Resolved profile photo not loading on the Professional page by using the dynamic `$page.props.auth.user.profile_photo_url`.
 - Resolved `TypeError: can't access property "name", s.$page.props.auth.user is null` in `AppLayout.vue` by conditionally rendering navigation elements based on user authentication status.
 - Resolved navigation issue where authenticated users were seeing guest navigation on Home and Professional pages by reverting `Home.vue` and `Professional.vue` to use `AppLayout.vue`.
 - Resolved Integrations dropdown alignment issue in `AppLayout.vue`.
