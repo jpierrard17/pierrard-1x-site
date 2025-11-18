@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Documented Strava API endpoints and data structures (`strava-plan.md`).
 
 ### Changed
+- Updated `.env` and `.env.example` with `HEVY_API_KEY` and `HEVY_API_URL`.
 - Transformed `Professional.vue` into a personal portfolio and CV page, incorporating detailed information from the user's resume.
 - Reconfigured `AppLayout.vue` to remove the default Laravel `ApplicationMark` from the left side of the navbar, and updated the user profile dropdown to be triggered by the user's profile photo.
 - Removed the default Laravel `ApplicationMark` from `GuestLayout.vue`.
