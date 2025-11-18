@@ -2,8 +2,9 @@
 import { onMounted, ref } from 'vue';
 import InputText from 'primevue/inputtext';
 
-defineProps({
+const props = defineProps({
     modelValue: String,
+    autofocus: Boolean,
 });
 
 defineEmits(['update:modelValue']);
@@ -11,18 +12,19 @@ defineEmits(['update:modelValue']);
 const input = ref(null);
 
 onMounted(() => {
-    if (input.value.hasAttribute('autofocus')) {
-        input.value.focus();
+    if (props.autofocus) {
+        input.value.$el.focus();
     }
 });
 
-defineExpose({ focus: () => input.value.focus() });
+defineExpose({ focus: () => input.value.$el.focus() });
 </script>
 
 <template>
     <InputText
         ref="input"
-        :value="modelValue"
+        :value="props.modelValue"
         @input="$emit('update:modelValue', $event.target.value)"
+        :autofocus="props.autofocus"
     />
 </template>
