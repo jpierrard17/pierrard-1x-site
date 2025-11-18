@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Created `settings` table migration (`create_settings_table`).
+- Created `add_first_last_name_to_users_table` migration.
+- Created `Setting` Eloquent model.
 - Created Hevy integration scaffolding: `HevyController.php`, `HevyService.php`, `HevyAuthRequest.php`, and `config/hevy.php`.
 - Added routes for Hevy integration (`/integrations/hevy`, `/integrations/hevy/api-key`, `/integrations/hevy/disconnect`) in `routes/web.php`.
 - Created `Integrations.vue`, `Integrations/Hevy.vue`, and `Integrations/Strava.vue` placeholder components.
@@ -23,6 +26,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Documented Strava API endpoints and data structures (`strava-plan.md`).
 
 ### Changed
+- Modified `User` model to include `first_name` and `last_name`, remove `name`, add a `settings` relationship, and implement `hevy_api_key` accessor/mutator.
+- Modified `create_settings_table` migration to include `user_id`, `key`, `value`, and `type` columns.
+- Modified `add_first_last_name_to_users_table` migration to add `first_name` and `last_name` and drop the `name` column.
 - Implemented the Hevy integration frontend in `Integrations/Hevy.vue`, allowing users to connect/disconnect their Hevy account and submit API keys.
 - Updated `.env` and `.env.example` with `HEVY_API_KEY` and `HEVY_API_URL`.
 - Transformed `Professional.vue` into a personal portfolio and CV page, incorporating detailed information from the user's resume.

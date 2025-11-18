@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -26,7 +27,8 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
         'email',
         'password',
     ];
@@ -63,5 +65,36 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Get the user's settings.
+     */
+    public function settings(): HasMany
+    {
+        return $this->hasMany(Setting::class);
+    }
+
+    /**
+     * Get the Hevy API key from settings.
+     */
+    public function getHevyApiKeyAttribute(): ?string
+    {
+        return $this->settings()->where('key', 'hevy_api_key')->first()?->value;
+    }
+
+    /**
+     * Set the Hevy API key in settings.
+     */
+    public function setHevyApiKeyAttribute(?string $value): void
+    {
+        if ($value) {
+            $this->settings()->updateOrCreate(
+                ['key' => 'hevy_api_key'],
+                ['value' => $value, 'type' => 'api_key']
+            );
+        } else {
+            $this->settings()->where('key', 'hevy_api_key')->delete();
+        }
     }
 }
