@@ -46,6 +46,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `PLAN.md` to include PrimeVue in the technology stack.
 
 ### Fixed
+- Resolved `SQLSTATE[42S22]: Column not found: 1054 Unknown column 'name'` error by updating `UpdateUserProfileInformation.php` and `UpdateProfileInformationForm.vue` to use `first_name` and `last_name`.
+- Fixed "Element is missing end tag" syntax error in `UpdateProfileInformationForm.vue`.
+- Updated `AppLayout.vue` to use `first_name` and `last_name` for displayed user names and profile photo alt attributes.
 - Removed old `2025_11_18_012855_add_hevy_api_key_to_users_table.php` migration file, as its functionality was replaced by the new settings table.
 - Resolved `TypeError: can't access property "success", l.$page.props.flash is undefined` in `Integrations/Hevy.vue` by adding a conditional check for `$page.props.flash`.
 - Resolved profile photo not loading on the Professional page by using the dynamic `$page.props.auth.user.profile_photo_url`.
