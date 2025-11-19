@@ -35,6 +35,7 @@ Route::middleware([
     Route::get('/integrations/hevy', [HevyController::class, 'index'])->name('integrations.hevy');
     Route::post('/integrations/hevy/api-key', [HevyController::class, 'storeApiKey'])->name('integrations.hevy.store-api-key');
     Route::post('/integrations/hevy/disconnect', [HevyController::class, 'disconnect'])->name('integrations.hevy.disconnect');
+    Route::get('/integrations/hevy/data', [HevyController::class, 'fetchData'])->name('integrations.hevy.fetch-data');
 
     Route::get('/integrations/strava', function () {
         return Inertia::render('Integrations/Strava');

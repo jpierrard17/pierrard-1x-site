@@ -5,7 +5,8 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
-import { defineProps } from 'vue';
+import { defineProps, ref } from 'vue';
+import axios from 'axios';
 
 const props = defineProps<{
     hevyConnected: boolean;
@@ -14,6 +15,10 @@ const props = defineProps<{
 const form = useForm({
     api_key: '',
 });
+
+const hevyData = ref(null);
+const loading = ref(false);
+const fetchError = ref(null);
 
 const submitApiKey = () => {
     form.post(route('integrations.hevy.store-api-key'), {
@@ -25,6 +30,20 @@ const submitApiKey = () => {
 
 const disconnectHevy = () => {
     form.post(route('integrations.hevy.disconnect'));
+};
+
+const fetchHevyData = async () => {
+    loading.value = true;
+    fetchError.value = null;
+    try {
+        const response = await axios.get(route('integrations.hevy.fetch-data'));
+        hevyData.value = response.data;
+    } catch (error: any) {
+        fetchError.value = error.response?.data?.message || 'Failed to fetch Hevy data.';
+        console.error('Error fetching Hevy data:', error);
+    } finally {
+        loading.value = false;
+    }
 };
 </script>
 
@@ -48,14 +67,32 @@ const disconnectHevy = () => {
                     <div v-if="$page.props.flash && $page.props.flash.success" class="mb-4 font-medium text-sm text-green-600">
                         {{ $page.props.flash.success }}
                     </div>
+                    <div v-if="$page.props.flash && $page.props.flash.error" class="mb-4 font-medium text-sm text-red-600">
+                        {{ $page.props.flash.error }}
+                    </div>
 
                     <div v-if="props.hevyConnected">
                         <p class="text-lg text-gray-700 mb-4">
                             Hevy is currently connected to your account.
                         </p>
-                        <PrimaryButton @click="disconnectHevy">
-                            Disconnect Hevy
-                        </PrimaryButton>
+                        <div class="flex items-center space-x-4 mb-6">
+                            <PrimaryButton @click="disconnectHevy">
+                                Disconnect Hevy
+                            </PrimaryButton>
+                            <PrimaryButton @click="fetchHevyData" :disabled="loading">
+                                <span v-if="loading">Fetching Data...</span>
+                                <span v-else>Fetch Hevy Data</span>
+                            </PrimaryButton>
+                        </div>
+
+                        <div v-if="fetchError" class="mb-4 font-medium text-sm text-red-600">
+                            {{ fetchError }}
+                        </div>
+
+                        <div v-if="hevyData">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-2">Fetched Hevy Data:</h3>
+                            <pre class="bg-gray-100 p-4 rounded-md text-sm overflow-x-auto">{{ JSON.stringify(hevyData, null, 2) }}</pre>
+                        </div>
                     </div>
                     <div v-else>
                         <p class="text-lg text-gray-700 mb-4">
