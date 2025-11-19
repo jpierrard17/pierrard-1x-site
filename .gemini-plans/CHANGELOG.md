@@ -52,6 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `PLAN.md` to include PrimeVue in the technology stack.
 
 ### Fixed
+- Resolved `HTTP request returned status code 404` for Hevy API key verification by updating the endpoint in `HevyService.php` to `/me`.
 - Resolved `SQLSTATE[42S22]: Column not found: 1054 Unknown column 'name'` error by updating `UpdateUserProfileInformation.php` and `UpdateProfileInformationForm.vue` to use `first_name` and `last_name`.
 - Fixed "Element is missing end tag" syntax error in `UpdateProfileInformationForm.vue`.
 - Updated `AppLayout.vue` to use `first_name` and `last_name` for displayed user names and profile photo alt attributes.

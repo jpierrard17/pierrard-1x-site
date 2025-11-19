@@ -34,7 +34,7 @@ class HevyService
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $apiKey,
             'Accept' => 'application/json',
-        ])->get("{$this->baseUrl}/user/profile"); // Or some other lightweight endpoint
+        ])->get("{$this->baseUrl}/me"); // Using /me endpoint for verification
 
         if ($response->successful()) {
             return true;
