@@ -26,6 +26,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Documented Strava API endpoints and data structures (`strava-plan.md`).
 
 ### Changed
+- Refactored `HevyService` to accept API key in constructor and implemented actual API call for `verifyApiKey`.
+- Updated `HevyController` to instantiate `HevyService` with the user's API key and to use `HevyService` for API key verification.
 - Modified `User` model to include `first_name` and `last_name`, remove `name`, add a `settings` relationship, and implement `hevy_api_key` accessor/mutator.
 - Modified `create_settings_table` migration to include `user_id`, `key`, `value`, and `type` columns.
 - Modified `add_first_last_name_to_users_table` migration to add `first_name` and `last_name` and drop the `name` column.

@@ -14,9 +14,10 @@ class HevyController extends Controller
 {
     protected HevyService $hevyService;
 
-    public function __construct(HevyService $hevyService)
+    public function __construct()
     {
-        $this->hevyService = $hevyService;
+        $user = auth()->user();
+        $this->hevyService = new HevyService($user->hevy_api_key);
     }
 
     /**
@@ -25,7 +26,7 @@ class HevyController extends Controller
     public function index(): Response
     {
         return Inertia::render('Integrations/Hevy', [
-            'hevyConnected' => auth()->user()->hevy_api_key !== null, // Assuming a hevy_api_key field on User model
+            'hevyConnected' => auth()->user()->hevy_api_key !== null,
         ]);
     }
 
@@ -35,20 +36,19 @@ class HevyController extends Controller
     public function storeApiKey(HevyAuthRequest $request): RedirectResponse
     {
         $user = $request->user();
-        $user->hevy_api_key = $request->input('api_key');
-        $user->save();
 
-        // Optionally, verify the API key with HevyService
-        // try {
-        //     $this->hevyService->verifyApiKey($request->input('api_key'));
-        // } catch (\Exception $e) {
-        //     // Handle invalid API key
-        //     $user->hevy_api_key = null;
-        //     $user->save();
-        //     return back()->withErrors(['api_key' => 'Invalid Hevy API key.']);
-        // }
+        try {
+            $this->hevyService->verifyApiKey($request->input('api_key'));
+            $user->hevy_api_key = $request->input('api_key');
+            $user->save();
+        } catch (\Exception $e) {
+            // Handle invalid API key
+            $user->hevy_api_key = null; // Clear potentially invalid key
+            $user->save();
+            return back()->withErrors(['api_key' => 'Invalid Hevy API key: ' . $e->getMessage()]);
+        }
 
-        return back()->with('success', 'Hevy API key saved successfully.');
+        return back()->with('success', 'Hevy API key saved and verified successfully.');
     }
 
     /**

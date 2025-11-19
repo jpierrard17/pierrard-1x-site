@@ -6,20 +6,15 @@ use Illuminate\Support\Facades\Http;
 
 class HevyService
 {
-    protected string $apiKey;
+    protected ?string $apiKey = null;
     protected string $baseUrl;
 
-    public function __construct()
+    public function __construct(?string $apiKey = null)
     {
         $this->baseUrl = config('hevy.api_base_url');
-    }
-
-    /**
-     * Set the API key for the service.
-     */
-    public function setApiKey(string $apiKey): void
-    {
-        $this->apiKey = $apiKey;
+        if ($apiKey) {
+            $this->apiKey = $apiKey;
+        }
     }
 
     /**
@@ -29,13 +24,23 @@ class HevyService
      */
     public function verifyApiKey(string $apiKey): bool
     {
-        $this->setApiKey($apiKey);
         // Implement actual API call to verify key, e.g., fetching user profile
         // For now, a dummy check
         if (empty($apiKey)) {
             throw new \Exception('Hevy API key cannot be empty.');
         }
-        return true;
+        // In a real scenario, you would make an API call here
+        // For example:
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $apiKey,
+            'Accept' => 'application/json',
+        ])->get("{$this->baseUrl}/user/profile"); // Or some other lightweight endpoint
+
+        if ($response->successful()) {
+            return true;
+        }
+
+        $response->throw(); // Throws an exception for 4xx or 5xx errors
     }
 
     /**
@@ -43,6 +48,10 @@ class HevyService
      */
     public function fetchWorkouts(): array
     {
+        if (!$this->apiKey) {
+            throw new \Exception('Hevy API key not set for service.');
+        }
+
         // Example API call
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $this->apiKey,
