@@ -78,8 +78,8 @@ class HevyService
             'api-key' => $this->apiKey,
             'Accept' => 'application/json',
         ])->get("{$this->baseUrl}/workouts", [
-            'page' => 1,
-            'pageSize' => $limit,
+            'offset' => 0,
+            'limit' => $limit,
         ]);
 
         if ($response->successful()) {
