@@ -32,9 +32,9 @@ class HevyService
         // In a real scenario, you would make an API call here
         // For example:
         $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $apiKey,
+            'api-key' => $apiKey,
             'Accept' => 'application/json',
-        ])->get("{$this->baseUrl}/user/profile"); // Or some other lightweight endpoint
+        ])->get("{$this->baseUrl}/routines?page=1&pageSize=1"); // Using /routines endpoint for verification
 
         if ($response->successful()) {
             return true;
@@ -54,7 +54,7 @@ class HevyService
 
         // Example API call
         $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $this->apiKey,
+            'api-key' => $this->apiKey,
             'Accept' => 'application/json',
         ])->get("{$this->baseUrl}/workouts"); // Replace with actual Hevy API endpoint
 

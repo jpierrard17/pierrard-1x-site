@@ -26,6 +26,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Documented Strava API endpoints and data structures (`strava-plan.md`).
 
 ### Changed
+- Updated `.env` with the new `HEVY_API_KEY`.
+- Implemented Hevy data visualization frontend in `Integrations/Hevy.vue` with data fetching, loading states, and display.
+- Added `fetchData` method to `HevyController` to fetch data from `HevyService` and return it as JSON.
+- Added `GET /integrations/hevy/data` route to `routes/web.php`.
 - Refactored `HevyService` to accept API key in constructor and implemented actual API call for `verifyApiKey`.
 - Updated `HevyController` to instantiate `HevyService` with the user's API key and to use `HevyService` for API key verification.
 - Modified `User` model to include `first_name` and `last_name`, remove `name`, add a `settings` relationship, and implement `hevy_api_key` accessor/mutator.
@@ -48,6 +52,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `PLAN.md` to include PrimeVue in the technology stack.
 
 ### Fixed
+- Fixed Hevy API connection issue by updating authentication header to `api-key` and using `/routines` endpoint for verification.
+- Resolved `HTTP request returned status code 404` for Hevy API key verification by updating the endpoint in `HevyService.php` to `/me`.
 - Resolved `SQLSTATE[42S22]: Column not found: 1054 Unknown column 'name'` error by updating `UpdateUserProfileInformation.php` and `UpdateProfileInformationForm.vue` to use `first_name` and `last_name`.
 - Fixed "Element is missing end tag" syntax error in `UpdateProfileInformationForm.vue`.
 - Updated `AppLayout.vue` to use `first_name` and `last_name` for displayed user names and profile photo alt attributes.

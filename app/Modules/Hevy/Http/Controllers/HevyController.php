@@ -62,4 +62,17 @@ class HevyController extends Controller
 
         return back()->with('success', 'Hevy integration disconnected.');
     }
+
+    /**
+     * Fetch data from Hevy API.
+     */
+    public function fetchData(): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $data = $this->hevyService->fetchWorkouts(); // Example: fetching workouts
+            return response()->json($data);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to fetch Hevy data: ' . $e->getMessage()], 500);
+        }
+    }
 }
