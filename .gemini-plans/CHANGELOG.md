@@ -52,6 +52,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `PLAN.md` to include PrimeVue in the technology stack.
 
 ### Added
+- Implemented Hevy data visualizations: Workout Frequency (bar chart) and Volume Progress (line chart).
+- Added `fetchChartData` endpoint to `HevyController` and aggregation methods to `HevyService`.
 - Installed `chart.js` dependency for Hevy data visualizations.
 - Updated `hevy-plan.md` with visualization strategy.
 

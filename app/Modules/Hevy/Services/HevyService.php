@@ -65,5 +65,83 @@ class HevyService
         $response->throw(); // Throws an exception for 4xx or 5xx errors
     }
 
-    // Add other methods for interacting with the Hevy API as needed
+    /**
+     * Fetch all workouts history.
+     */
+    public function fetchWorkoutsHistory(int $limit = 100): array
+    {
+        if (!$this->apiKey) {
+            throw new \Exception('Hevy API key not set for service.');
+        }
+
+        $response = Http::withHeaders([
+            'api-key' => $this->apiKey,
+            'Accept' => 'application/json',
+        ])->get("{$this->baseUrl}/workouts", [
+            'page' => 1,
+            'pageSize' => $limit,
+        ]);
+
+        if ($response->successful()) {
+            return $response->json()['workouts'] ?? [];
+        }
+
+        $response->throw();
+    }
+
+    /**
+     * Get workout frequency data (workouts per month).
+     */
+    public function getWorkoutFrequencyData(): array
+    {
+        $workouts = $this->fetchWorkoutsHistory();
+        $frequency = [];
+
+        foreach ($workouts as $workout) {
+            $month = date('Y-m', strtotime($workout['start_time']));
+            if (!isset($frequency[$month])) {
+                $frequency[$month] = 0;
+            }
+            $frequency[$month]++;
+        }
+
+        ksort($frequency);
+
+        return [
+            'labels' => array_keys($frequency),
+            'data' => array_values($frequency),
+        ];
+    }
+
+    /**
+     * Get volume progress data (total volume per workout).
+     */
+    public function getVolumeProgressData(): array
+    {
+        $workouts = $this->fetchWorkoutsHistory();
+        $volumeData = [];
+
+        foreach ($workouts as $workout) {
+            $volume = 0;
+            foreach ($workout['exercises'] as $exercise) {
+                foreach ($exercise['sets'] as $set) {
+                    $volume += ($set['weight_kg'] ?? 0) * ($set['reps'] ?? 0);
+                }
+            }
+            $volumeData[] = [
+                'date' => date('Y-m-d', strtotime($workout['start_time'])),
+                'volume' => $volume,
+            ];
+        }
+
+        // Sort by date ascending
+        usort($volumeData, function ($a, $b) {
+            return strtotime($a['date']) - strtotime($b['date']);
+        });
+
+        return [
+            'labels' => array_column($volumeData, 'date'),
+            'data' => array_column($volumeData, 'volume'),
+        ];
+    }
 }

@@ -75,4 +75,21 @@ class HevyController extends Controller
             return response()->json(['message' => 'Failed to fetch Hevy data: ' . $e->getMessage()], 500);
         }
     }
+    /**
+     * Fetch chart data from Hevy API.
+     */
+    public function fetchChartData(): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $frequency = $this->hevyService->getWorkoutFrequencyData();
+            $volume = $this->hevyService->getVolumeProgressData();
+
+            return response()->json([
+                'frequency' => $frequency,
+                'volume' => $volume,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to fetch Hevy chart data: ' . $e->getMessage()], 500);
+        }
+    }
 }
