@@ -216,3 +216,19 @@ This document outlines the available endpoints in the Hevy API, their data struc
     }
     ```
 *   **Potential Use Case:** Could be used to automatically sync data from Hevy to our application in real-time, instead of relying on scheduled commands. This is a more advanced feature to consider.
+
+---
+
+## Visualization Strategy
+
+We will use **PrimeVue Charts** (which wraps **Chart.js**) to visualize workout data.
+
+### Required Packages
+*   `chart.js`: The core charting library.
+*   `primevue`: Already installed, provides the `<Chart>` component.
+
+### Planned Visualizations
+1.  **Workout Frequency**: Bar chart showing number of workouts per week/month.
+2.  **Volume Progress**: Line chart showing total volume (kg) lifted over time.
+3.  **Exercise Progress**: Line chart showing max weight or estimated 1RM for specific exercises (e.g., Bench Press, Squat, Deadlift) over time.
+

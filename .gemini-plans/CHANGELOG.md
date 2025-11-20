@@ -51,6 +51,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `PLAN.md` to include architectural principles: Service-Oriented Controllers, Modular Integrations, and Flexible Visualizations.
 - Updated `PLAN.md` to include PrimeVue in the technology stack.
 
+### Added
+- Installed `chart.js` dependency for Hevy data visualizations.
+- Updated `hevy-plan.md` with visualization strategy.
+
 ### Fixed
 - Fixed Hevy API connection issue by updating authentication header to `api-key` and using `/routines` endpoint for verification.
 - Resolved `HTTP request returned status code 404` for Hevy API key verification by updating the endpoint in `HevyService.php` to `/me`.
