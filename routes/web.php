@@ -1,6 +1,7 @@
 <?php
 
 use App\Modules\Hevy\Http\Controllers\HevyController;
+use App\Modules\Strava\Http\Controllers\StravaController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -38,7 +39,10 @@ Route::middleware([
     Route::get('/integrations/hevy/data', [HevyController::class, 'fetchData'])->name('integrations.hevy.fetch-data');
     Route::get('/integrations/hevy/charts', [HevyController::class, 'fetchChartData'])->name('integrations.hevy.fetch-chart-data');
 
-    Route::get('/integrations/strava', function () {
-        return Inertia::render('Integrations/Strava');
-    })->name('integrations.strava');
+    // Strava Integration Routes
+    Route::get('/integrations/strava', [StravaController::class, 'index'])->name('integrations.strava');
+    Route::get('/integrations/strava/connect', [StravaController::class, 'connect'])->name('integrations.strava.connect');
+    Route::get('/integrations/strava/callback', [StravaController::class, 'callback'])->name('integrations.strava.callback');
+    Route::post('/integrations/strava/disconnect', [StravaController::class, 'disconnect'])->name('integrations.strava.disconnect');
+    Route::post('/integrations/strava/sync', [StravaController::class, 'sync'])->name('integrations.strava.sync');
 });
