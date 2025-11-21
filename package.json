@@ -23,7 +23,10 @@
     },
     "dependencies": {
         "@primevue/themes": "^4.4.1",
+        "@types/leaflet": "^1.9.21",
         "chart.js": "^4.5.1",
+        "leaflet": "^1.9.4",
+        "polyline-encoded": "^0.0.9",
         "primeicons": "^7.0.0",
         "primevue": "^4.4.1"
     }
