@@ -38,6 +38,8 @@ Route::middleware([
     Route::post('/integrations/hevy/disconnect', [HevyController::class, 'disconnect'])->name('integrations.hevy.disconnect');
     Route::get('/integrations/hevy/data', [HevyController::class, 'fetchData'])->name('integrations.hevy.fetch-data');
     Route::get('/integrations/hevy/charts', [HevyController::class, 'fetchChartData'])->name('integrations.hevy.fetch-chart-data');
+    Route::get('/integrations/hevy/exercises', [HevyController::class, 'fetchExercises'])->name('integrations.hevy.fetch-exercises');
+    Route::get('/integrations/hevy/exercise-progress', [HevyController::class, 'fetchExerciseProgress'])->name('integrations.hevy.fetch-exercise-progress');
 
     // Strava Integration Routes
     Route::get('/integrations/strava', [StravaController::class, 'index'])->name('integrations.strava');

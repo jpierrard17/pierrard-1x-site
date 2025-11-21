@@ -92,4 +92,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Refactored Hevy visualizations to query local database instead of calling API directly.
 - Updated Hevy sync to use page size of 10 (API maximum).
+- **Display weights in lbs instead of kg for all Hevy visualizations.**
+
+### Added
+- **Implemented exercise-specific progress visualizations for Hevy integration:**
+  - Exercise dropdown with search/filter functionality
+  - Max weight chart showing progression over time
+  - Volume per workout chart showing total weight × reps
+  - Estimated 1RM chart using Epley formula (weight × (1 + reps/30))
+- Added `getAvailableExercises()` method to HevyService
+- Added `getExerciseProgressData()` method to HevyService
+- Added `calculateEstimated1RM()` helper method
+- Added `/integrations/hevy/exercises` endpoint
+- Added `/integrations/hevy/exercise-progress` endpoint
+
 

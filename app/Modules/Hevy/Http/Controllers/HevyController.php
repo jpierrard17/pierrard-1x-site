@@ -92,4 +92,34 @@ class HevyController extends Controller
             return response()->json(['message' => 'Failed to fetch Hevy chart data: ' . $e->getMessage()], 500);
         }
     }
+
+    /**
+     * Fetch available exercises.
+     */
+    public function fetchExercises(): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $exercises = $this->hevyService->getAvailableExercises();
+            return response()->json($exercises);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to fetch exercises: ' . $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Fetch exercise progress data.
+     */
+    public function fetchExerciseProgress(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $request->validate([
+            'exercise_template_id' => 'required|string',
+        ]);
+
+        try {
+            $data = $this->hevyService->getExerciseProgressData($request->input('exercise_template_id'));
+            return response()->json($data);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to fetch exercise progress: ' . $e->getMessage()], 500);
+        }
+    }
 }

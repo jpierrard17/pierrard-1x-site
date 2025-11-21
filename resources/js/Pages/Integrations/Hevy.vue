@@ -8,6 +8,7 @@ import InputError from '@/Components/InputError.vue';
 import { defineProps, ref, onMounted } from 'vue';
 import axios from 'axios';
 import Chart from 'primevue/chart';
+import Dropdown from 'primevue/dropdown';
 
 const props = defineProps<{
     hevyConnected: boolean;
@@ -21,6 +22,13 @@ const hevyData = ref(null);
 const chartData = ref(null);
 const loading = ref(false);
 const fetchError = ref(null);
+
+// Exercise progress state
+const exercises = ref([]);
+const selectedExercise = ref(null);
+const exerciseProgressData = ref(null);
+const loadingExercises = ref(false);
+const loadingProgress = ref(false);
 
 const submitApiKey = () => {
     form.post(route('integrations.hevy.store-api-key'), {
@@ -82,6 +90,79 @@ const fetchChartData = async () => {
     }
 };
 
+const fetchExercises = async () => {
+    loadingExercises.value = true;
+    try {
+        const response = await axios.get(route('integrations.hevy.fetch-exercises'));
+        exercises.value = response.data.map((ex: any) => ({
+            label: `${ex.name} (${ex.count}×)`,
+            value: ex.id
+        }));
+    } catch (error) {
+        console.error('Error fetching exercises:', error);
+    } finally {
+        loadingExercises.value = false;
+    }
+};
+
+const fetchExerciseProgress = async () => {
+    if (!selectedExercise.value) return;
+    
+    loadingProgress.value = true;
+    try {
+        const response = await axios.get(route('integrations.hevy.fetch-exercise-progress'), {
+            params: { exercise_template_id: selectedExercise.value }
+        });
+        const data = response.data;
+        
+        exerciseProgressData.value = {
+            maxWeight: {
+                labels: data.labels,
+                datasets: [
+                    {
+                        label: 'Max Weight (lbs)',
+                        borderColor: '#EF4444',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        data: data.maxWeight,
+                        fill: true,
+                        tension: 0.4
+                    }
+                ]
+            },
+            volume: {
+                labels: data.labels,
+                datasets: [
+                    {
+                        label: 'Total Volume (lbs)',
+                        borderColor: '#3B82F6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        data: data.volume,
+                        fill: true,
+                        tension: 0.4
+                    }
+                ]
+            },
+            estimated1RM: {
+                labels: data.labels,
+                datasets: [
+                    {
+                        label: 'Estimated 1RM (lbs)',
+                        borderColor: '#10B981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        data: data.estimated1RM,
+                        fill: true,
+                        tension: 0.4
+                    }
+                ]
+            }
+        };
+    } catch (error) {
+        console.error('Error fetching exercise progress:', error);
+    } finally {
+        loadingProgress.value = false;
+    }
+};
+
 const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -90,6 +171,7 @@ const chartOptions = {
 onMounted(() => {
     if (props.hevyConnected) {
         fetchChartData();
+        fetchExercises();
     }
 });
 </script>
@@ -147,6 +229,53 @@ onMounted(() => {
                                 <h3 class="text-lg font-semibold mb-4">Volume Progress</h3>
                                 <div class="h-64">
                                     <Chart type="line" :data="chartData.volume" :options="chartOptions" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Exercise Progress Section -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Exercise Progress</h3>
+                            <div class="mb-4">
+                                <label for="exercise-select" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Select Exercise
+                                </label>
+                                <Dropdown
+                                    id="exercise-select"
+                                    v-model="selectedExercise"
+                                    :options="exercises"
+                                    optionLabel="label"
+                                    optionValue="value"
+                                    placeholder="Choose an exercise..."
+                                    :loading="loadingExercises"
+                                    @change="fetchExerciseProgress"
+                                    class="w-full md:w-96"
+                                    filter
+                                />
+                            </div>
+                            
+                            <div v-if="loadingProgress" class="text-center py-8">
+                                <span class="text-gray-600">Loading exercise data...</span>
+                            </div>
+                            
+                            <div v-else-if="exerciseProgressData" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                                <div class="bg-gray-50 p-4 rounded-lg shadow">
+                                    <h4 class="text-md font-semibold mb-3">Max Weight</h4>
+                                    <div class="h-64">
+                                        <Chart type="line" :data="exerciseProgressData.maxWeight" :options="chartOptions" />
+                                    </div>
+                                </div>
+                                <div class="bg-gray-50 p-4 rounded-lg shadow">
+                                    <h4 class="text-md font-semibold mb-3">Volume per Workout</h4>
+                                    <div class="h-64">
+                                        <Chart type="line" :data="exerciseProgressData.volume" :options="chartOptions" />
+                                    </div>
+                                </div>
+                                <div class="bg-gray-50 p-4 rounded-lg shadow">
+                                    <h4 class="text-md font-semibold mb-3">Estimated 1RM</h4>
+                                    <div class="h-64">
+                                        <Chart type="line" :data="exerciseProgressData.estimated1RM" :options="chartOptions" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
