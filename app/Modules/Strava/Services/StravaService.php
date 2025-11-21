@@ -330,8 +330,8 @@ class StravaService
             ->select('map_summary_polyline')
             ->get();
 
-        // Collect all polylines for heatmap
-        $polylines = $activities->pluck('map_summary_polyline')->filter()->toArray();
+        // Collect all polylines for heatmap - use values() to ensure it's a proper array
+        $polylines = $activities->pluck('map_summary_polyline')->filter()->values()->toArray();
 
         return [
             'polylines' => $polylines,

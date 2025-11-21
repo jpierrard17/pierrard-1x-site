@@ -141,5 +141,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed heatmap rendering to properly handle polyline array
 - Fixed heatmap initial center to use first route coordinates instead of hardcoded NYC location
 - Added error handling for polyline decoding
+- **Fixed backend to return polylines as proper JSON array using `values()` method**
 
 
