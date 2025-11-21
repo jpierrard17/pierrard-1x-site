@@ -46,7 +46,17 @@ The application will be built using the following technologies:
 *   **Flexible Visualizations:** The data visualization components will be designed modularly, allowing for new charts, reports, and data views to be developed and added in the future with minimal friction.
 *   **Test Coverage:** All code will adhere to the established requirement of a minimum 75% test coverage.
 
-## 5. Development Roadmap
+## 5. Display Units
+
+All fitness data should be displayed using the following units (data may be stored in different units internally):
+
+*   **Weight:** lbs (pounds) - stored as kg, converted for display
+*   **Distance:** 
+    *   Running/Cycling: km (kilometers)
+    *   Short distances (e.g., Farmer's Walk): m (meters)
+*   **Vertical/Height:** feet and inches
+
+## 6. Development Roadmap
 
 This is a high-level roadmap tailored for the chosen Laravel stack.
 
@@ -80,7 +90,7 @@ This is a high-level roadmap tailored for the chosen Laravel stack.
     *   Implement the "Create Hevy Routine" feature within a dedicated Filament page. This will involve making POST requests back to the Hevy API via the `HevyService`.
     *   Develop the logic to select and publish specific activities to the public-facing home page.
 
-## 6. Next Steps
+## 7. Next Steps
 
 *   All data models and migrations for Hevy and Strava integrations are now complete.
 *   Proceed with Phase 3: API Integrations.
