@@ -176,4 +176,175 @@ class StravaService
 
         return ['added' => $added, 'skipped' => $skipped];
     }
+
+    /**
+     * Get activity frequency data (activities per month).
+     */
+    public function getActivityFrequencyData(): array
+    {
+        $activities = StravaActivity::orderBy('start_date_local')->get();
+        $frequency = [];
+
+        foreach ($activities as $activity) {
+            $month = Carbon::parse($activity->start_date_local)->format('Y-m');
+            if (!isset($frequency[$month])) {
+                $frequency[$month] = 0;
+            }
+            $frequency[$month]++;
+        }
+
+        return [
+            'labels' => array_keys($frequency),
+            'data' => array_values($frequency),
+        ];
+    }
+
+    /**
+     * Get distance progress data (total km per month).
+     */
+    public function getDistanceProgressData(): array
+    {
+        $activities = StravaActivity::orderBy('start_date_local')->get();
+        $distanceData = [];
+
+        foreach ($activities as $activity) {
+            $month = Carbon::parse($activity->start_date_local)->format('Y-m');
+            if (!isset($distanceData[$month])) {
+                $distanceData[$month] = 0;
+            }
+            // Convert meters to km
+            $distanceData[$month] += $activity->distance / 1000;
+        }
+
+        return [
+            'labels' => array_keys($distanceData),
+            'data' => array_map(fn($d) => round($d, 2), array_values($distanceData)),
+        ];
+    }
+
+    /**
+     * Get elevation progress data (total feet per month).
+     */
+    public function getElevationProgressData(): array
+    {
+        $activities = StravaActivity::orderBy('start_date_local')->get();
+        $elevationData = [];
+
+        foreach ($activities as $activity) {
+            $month = Carbon::parse($activity->start_date_local)->format('Y-m');
+            if (!isset($elevationData[$month])) {
+                $elevationData[$month] = 0;
+            }
+            // Convert meters to feet
+            $elevationData[$month] += $activity->total_elevation_gain * 3.28084;
+        }
+
+        return [
+            'labels' => array_keys($elevationData),
+            'data' => array_map(fn($e) => round($e, 2), array_values($elevationData)),
+        ];
+    }
+
+    /**
+     * Get activity type breakdown.
+     */
+    public function getActivityTypeBreakdown(): array
+    {
+        $breakdown = StravaActivity::select('type', \DB::raw('COUNT(*) as count'), \DB::raw('SUM(distance) as total_distance'))
+            ->groupBy('type')
+            ->orderByDesc('count')
+            ->get();
+
+        return [
+            'labels' => $breakdown->pluck('type')->toArray(),
+            'counts' => $breakdown->pluck('count')->toArray(),
+            'distances' => $breakdown->pluck('total_distance')->map(fn($d) => round($d / 1000, 2))->toArray(),
+        ];
+    }
+
+    /**
+     * Get pace analysis for a specific activity type.
+     */
+    public function getPaceAnalysis(string $activityType = 'Run'): array
+    {
+        $activities = StravaActivity::where('type', $activityType)
+            ->where('distance', '>', 0)
+            ->orderBy('start_date_local')
+            ->get();
+
+        $paceData = [];
+
+        foreach ($activities as $activity) {
+            $date = Carbon::parse($activity->start_date_local)->format('Y-m-d');
+            $distanceKm = $activity->distance / 1000;
+            $timeMinutes = $activity->moving_time / 60;
+            
+            if ($distanceKm > 0) {
+                $paceMinPerKm = $timeMinutes / $distanceKm;
+                $paceData[] = [
+                    'date' => $date,
+                    'pace' => round($paceMinPerKm, 2),
+                ];
+            }
+        }
+
+        return [
+            'labels' => array_column($paceData, 'date'),
+            'data' => array_column($paceData, 'pace'),
+        ];
+    }
+
+    /**
+     * Get activities with routes for mapping.
+     */
+    public function getActivitiesWithRoutes(?string $type = null, int $limit = 50): array
+    {
+        $query = StravaActivity::whereNotNull('map_summary_polyline')
+            ->orderBy('start_date_local', 'desc')
+            ->limit($limit);
+
+        if ($type) {
+            $query->where('type', $type);
+        }
+
+        return $query->get()->map(function ($activity) {
+            $distanceKm = round($activity->distance / 1000, 2);
+            $movingTimeMinutes = round($activity->moving_time / 60, 1);
+            $paceMinPerKm = $distanceKm > 0 ? round($movingTimeMinutes / $distanceKm, 2) : null;
+            
+            return [
+                'id' => $activity->id,
+                'name' => $activity->name,
+                'type' => $activity->type,
+                'date' => Carbon::parse($activity->start_date_local)->format('Y-m-d H:i'),
+                'distance' => $distanceKm, // km
+                'movingTime' => $movingTimeMinutes, // minutes
+                'pace' => $paceMinPerKm, // min/km
+                'elevationGain' => round($activity->total_elevation_gain * 3.28084, 0), // feet
+                'averageHeartrate' => $activity->average_heartrate,
+                'maxHeartrate' => $activity->max_heartrate,
+                'polyline' => $activity->map_summary_polyline,
+            ];
+        })->toArray();
+    }
+
+    /**
+     * Get heatmap data (routes with minimum occurrences).
+     */
+    public function getHeatmapData(int $minOccurrences = 5): array
+    {
+        // Get all runs and walks with polylines
+        $activities = StravaActivity::whereIn('type', ['Run', 'Walk'])
+            ->whereNotNull('map_summary_polyline')
+            ->select('map_summary_polyline')
+            ->get();
+
+        // Collect all polylines for heatmap - use values() to ensure it's a proper array
+        $polylines = $activities->pluck('map_summary_polyline')->filter()->values()->toArray();
+
+        return [
+            'polylines' => $polylines,
+            'minOccurrences' => $minOccurrences,
+        ];
+    }
 }

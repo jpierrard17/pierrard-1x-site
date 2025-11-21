@@ -106,4 +106,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `/integrations/hevy/exercises` endpoint
 - Added `/integrations/hevy/exercise-progress` endpoint
 
+### Fixed
+- Fixed query issue in `getExerciseProgressData` using `whereHas` instead of `join` to avoid duplicate workouts
+
+---
+
+## [Unreleased] - Strava Visualizations (In Progress)
+
+### Added
+- **Strava visualization backend:**
+  - Added `getActivityFrequencyData()` method to StravaService (activities per month)
+  - Added `getDistanceProgressData()` method (km per month with unit conversion)
+  - Added `getElevationProgressData()` method (feet per month with unit conversion)
+  - Added `getActivityTypeBreakdown()` method (count and distance by type)
+  - Added `getPaceAnalysis()` method (average pace for runs in min/km)
+  - Added `getActivitiesWithRoutes()` method for route mapping
+  - Added `getHeatmapData()` method for route frequency visualization
+- **Strava controller endpoints:**
+  - Added `GET /integrations/strava/charts` endpoint
+  - Added `GET /integrations/strava/activities-with-routes` endpoint
+  - Added `GET /integrations/strava/heatmap` endpoint
+- **Dependencies:**
+  - Installed Leaflet.js for interactive mapping
+  - Installed polyline-encoded for Strava polyline decoding
+- **Strava visualization frontend:**
+  - Implemented 5 Chart.js visualizations (frequency, distance, elevation, activity types, pace)
+  - Added interactive Leaflet.js maps for individual activity routes
+  - Added heatmap view showing frequently-run routes (≥5 occurrences)
+  - Added activity list with click-to-view route functionality
+  - Integrated polyline decoding for Strava's encoded route data
+  - Applied unit conversions (km for distance, feet for elevation, min/km for pace)
+
+### Fixed
+- Fixed heatmap rendering to properly handle polyline array
+- Fixed heatmap initial center to use first route coordinates instead of hardcoded NYC location
+- Added error handling for polyline decoding
+- **Fixed backend to return polylines as proper JSON array using `values()` method**
+
+### Changed
+- Enhanced activity details display to show distance, moving time, pace, elevation gain, and heart rate metrics
+
 
