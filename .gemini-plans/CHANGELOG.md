@@ -137,4 +137,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Integrated polyline decoding for Strava's encoded route data
   - Applied unit conversions (km for distance, feet for elevation, min/km for pace)
 
+### Fixed
+- Fixed heatmap rendering to properly handle polyline array
+- Fixed heatmap initial center to use first route coordinates instead of hardcoded NYC location
+- Added error handling for polyline decoding
+
 

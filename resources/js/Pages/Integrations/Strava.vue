@@ -179,7 +179,10 @@ const renderActivityMap = () => {
 };
 
 const renderHeatmap = () => {
-    if (!heatmapData.value || !heatmapData.value.polylines) return;
+    if (!heatmapData.value || !heatmapData.value.polylines || heatmapData.value.polylines.length === 0) {
+        console.log('No heatmap data available');
+        return;
+    }
 
     // Destroy existing map
     if (heatmapMap.value) {
@@ -189,7 +192,12 @@ const renderHeatmap = () => {
     const mapElement = document.getElementById('heatmap');
     if (!mapElement) return;
 
-    heatmapMap.value = L.map('heatmap').setView([40.7128, -74.0060], 12); // Default center
+    // Decode first polyline to get initial center
+    const firstPolyline = heatmapData.value.polylines[0];
+    const firstCoords = polyline.decode(firstPolyline);
+    const initialCenter = firstCoords[0] || [0, 0];
+
+    heatmapMap.value = L.map('heatmap').setView(initialCenter, 13);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
@@ -197,15 +205,20 @@ const renderHeatmap = () => {
 
     // Decode and render all polylines
     const allCoordinates: any[] = [];
+    
     heatmapData.value.polylines.forEach((encodedPolyline: string) => {
-        const coordinates = polyline.decode(encodedPolyline);
-        allCoordinates.push(...coordinates);
-        
-        L.polyline(coordinates, {
-            color: '#FF6B35',
-            weight: 2,
-            opacity: 0.3
-        }).addTo(heatmapMap.value);
+        try {
+            const coordinates = polyline.decode(encodedPolyline);
+            allCoordinates.push(...coordinates);
+            
+            L.polyline(coordinates, {
+                color: '#FF6B35',
+                weight: 2,
+                opacity: 0.3
+            }).addTo(heatmapMap.value);
+        } catch (error) {
+            console.error('Error decoding polyline:', error);
+        }
     });
 
     // Center map on all routes
