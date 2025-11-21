@@ -47,4 +47,7 @@ Route::middleware([
     Route::get('/integrations/strava/callback', [StravaController::class, 'callback'])->name('integrations.strava.callback');
     Route::post('/integrations/strava/disconnect', [StravaController::class, 'disconnect'])->name('integrations.strava.disconnect');
     Route::post('/integrations/strava/sync', [StravaController::class, 'sync'])->name('integrations.strava.sync');
+    Route::get('/integrations/strava/charts', [StravaController::class, 'fetchChartData'])->name('integrations.strava.fetch-chart-data');
+    Route::get('/integrations/strava/activities-with-routes', [StravaController::class, 'fetchActivitiesWithRoutes'])->name('integrations.strava.fetch-activities-with-routes');
+    Route::get('/integrations/strava/heatmap', [StravaController::class, 'fetchHeatmapData'])->name('integrations.strava.fetch-heatmap-data');
 });

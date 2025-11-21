@@ -93,4 +93,67 @@ class StravaController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Fetch chart data for visualizations.
+     */
+    public function fetchChartData()
+    {
+        try {
+            $frequency = $this->stravaService->getActivityFrequencyData();
+            $distance = $this->stravaService->getDistanceProgressData();
+            $elevation = $this->stravaService->getElevationProgressData();
+            $breakdown = $this->stravaService->getActivityTypeBreakdown();
+            $pace = $this->stravaService->getPaceAnalysis('Run');
+
+            return response()->json([
+                'frequency' => $frequency,
+                'distance' => $distance,
+                'elevation' => $elevation,
+                'breakdown' => $breakdown,
+                'pace' => $pace,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to fetch chart data: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Fetch activities with routes for mapping.
+     */
+    public function fetchActivitiesWithRoutes(Request $request)
+    {
+        try {
+            $type = $request->query('type');
+            $limit = $request->query('limit', 50);
+            
+            $activities = $this->stravaService->getActivitiesWithRoutes($type, $limit);
+            
+            return response()->json($activities);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to fetch activities: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Fetch heatmap data.
+     */
+    public function fetchHeatmapData(Request $request)
+    {
+        try {
+            $minOccurrences = $request->query('min_occurrences', 5);
+            
+            $data = $this->stravaService->getHeatmapData($minOccurrences);
+            
+            return response()->json($data);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to fetch heatmap data: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
 }
