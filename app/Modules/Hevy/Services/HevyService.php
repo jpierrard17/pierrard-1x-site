@@ -90,22 +90,135 @@ class HevyService
     }
 
     /**
-     * Get workout frequency data (workouts per month).
+     * Sync workouts from Hevy API to local database.
+     */
+    public function syncWorkouts(int $userId): array
+    {
+        if (!$this->apiKey) {
+            throw new \Exception('Hevy API key not set for service.');
+        }
+
+        $added = 0;
+        $skipped = 0;
+        $page = 0;
+        $pageSize = 10; // API maximum
+        $keepFetching = true;
+
+        while ($keepFetching) {
+            $response = Http::withHeaders([
+                'api-key' => $this->apiKey,
+                'Accept' => 'application/json',
+            ])->get("{$this->baseUrl}/workouts", [
+                'page' => $page,
+                'pageSize' => $pageSize,
+            ]);
+
+            if (!$response->successful()) {
+                throw new \Exception('Failed to fetch workouts from Hevy: ' . $response->body());
+            }
+
+            $data = $response->json();
+            $workouts = $data['workouts'] ?? [];
+
+            if (empty($workouts)) {
+                $keepFetching = false;
+                break;
+            }
+
+            $pageSkipped = 0;
+
+            foreach ($workouts as $workoutData) {
+                $exists = \App\Modules\Hevy\Models\HevyWorkout::where('id', $workoutData['id'])->exists();
+
+                if ($exists) {
+                    $skipped++;
+                    $pageSkipped++;
+                    continue;
+                }
+
+                // Create Workout
+                $workout = \App\Modules\Hevy\Models\HevyWorkout::create([
+                    'id' => $workoutData['id'],
+                    'user_id' => $userId,
+                    'title' => $workoutData['title'],
+                    'description' => $workoutData['description'],
+                    'start_time' => \Carbon\Carbon::parse($workoutData['start_time']),
+                    'end_time' => \Carbon\Carbon::parse($workoutData['end_time']),
+                    'hevy_created_at' => \Carbon\Carbon::parse($workoutData['created_at']),
+                    'hevy_updated_at' => \Carbon\Carbon::parse($workoutData['updated_at']),
+                ]);
+
+                // Create Exercises and Sets
+                foreach ($workoutData['exercises'] as $exerciseData) {
+                    // Ensure Exercise Template exists
+                    $templateExists = \App\Modules\Hevy\Models\HevyExerciseTemplate::where('id', $exerciseData['exercise_template_id'])->exists();
+                    if (!$templateExists) {
+                        \App\Modules\Hevy\Models\HevyExerciseTemplate::create([
+                            'id' => $exerciseData['exercise_template_id'],
+                            'name' => $exerciseData['title'], // Use title as fallback name
+                            'type' => $exerciseData['exercise_type'] ?? 'weight',
+                            'primary_muscles' => [], // Default empty
+                            'secondary_muscles' => [], // Default empty
+                            'equipment' => [], // Default empty
+                        ]);
+                    }
+
+                    $workoutExercise = \App\Modules\Hevy\Models\HevyWorkoutExercise::create([
+                        'id' => (string) \Illuminate\Support\Str::uuid(),
+                        'hevy_workout_id' => $workout->id,
+                        'exercise_template_id' => $exerciseData['exercise_template_id'],
+                        'title' => $exerciseData['title'],
+                        'notes' => $exerciseData['notes'],
+                        'superset_id' => $exerciseData['superset_id'] ?? null,
+                        'exercise_type' => $exerciseData['exercise_type'] ?? 'weight', // Default or map correctly
+                    ]);
+
+                    foreach ($exerciseData['sets'] as $setData) {
+                        \App\Modules\Hevy\Models\HevyWorkoutSet::create([
+                            'id' => (string) \Illuminate\Support\Str::uuid(),
+                            'hevy_workout_exercise_id' => $workoutExercise->id,
+                            'index' => $setData['index'] ?? 0,
+                            'set_type' => $setData['set_type'] ?? 'normal',
+                            'weight_kg' => $setData['weight_kg'],
+                            'reps' => $setData['reps'],
+                            'distance_meters' => $setData['distance_meters'],
+                            'duration_seconds' => $setData['duration_seconds'],
+                            'rpe' => $setData['rpe'],
+                        ]);
+                    }
+                }
+
+                $added++;
+            }
+
+            if ($pageSkipped === count($workouts)) {
+                $keepFetching = false;
+            }
+
+            $page++;
+        }
+
+        return [
+            'added' => $added,
+            'skipped' => $skipped,
+        ];
+    }
+
+    /**
+     * Get workout frequency data (workouts per month) from local DB.
      */
     public function getWorkoutFrequencyData(): array
     {
-        $workouts = $this->fetchWorkoutsHistory();
+        $workouts = \App\Modules\Hevy\Models\HevyWorkout::orderBy('start_time')->get();
         $frequency = [];
 
         foreach ($workouts as $workout) {
-            $month = date('Y-m', strtotime($workout['start_time']));
+            $month = $workout->start_time->format('Y-m');
             if (!isset($frequency[$month])) {
                 $frequency[$month] = 0;
             }
             $frequency[$month]++;
         }
-
-        ksort($frequency);
 
         return [
             'labels' => array_keys($frequency),
@@ -114,30 +227,25 @@ class HevyService
     }
 
     /**
-     * Get volume progress data (total volume per workout).
+     * Get volume progress data (total volume per workout) from local DB.
      */
     public function getVolumeProgressData(): array
     {
-        $workouts = $this->fetchWorkoutsHistory();
+        $workouts = \App\Modules\Hevy\Models\HevyWorkout::with('exercises.sets')->orderBy('start_time')->get();
         $volumeData = [];
 
         foreach ($workouts as $workout) {
             $volume = 0;
-            foreach ($workout['exercises'] as $exercise) {
-                foreach ($exercise['sets'] as $set) {
-                    $volume += ($set['weight_kg'] ?? 0) * ($set['reps'] ?? 0);
+            foreach ($workout->exercises as $exercise) {
+                foreach ($exercise->sets as $set) {
+                    $volume += ($set->weight_kg ?? 0) * ($set->reps ?? 0);
                 }
             }
             $volumeData[] = [
-                'date' => date('Y-m-d', strtotime($workout['start_time'])),
+                'date' => $workout->start_time->format('Y-m-d'),
                 'volume' => $volume,
             ];
         }
-
-        // Sort by date ascending
-        usort($volumeData, function ($a, $b) {
-            return strtotime($a['date']) - strtotime($b['date']);
-        });
 
         return [
             'labels' => array_column($volumeData, 'date'),

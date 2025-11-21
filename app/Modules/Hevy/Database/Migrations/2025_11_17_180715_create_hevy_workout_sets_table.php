@@ -14,11 +14,13 @@ return new class extends Migration
         Schema::create('hevy_workout_sets', function (Blueprint $table) {
             $table->string('id')->primary();
             $table->string('hevy_workout_exercise_id');
-            $table->integer('reps');
-            $table->decimal('weight_kg', 8, 2);
-            $table->decimal('distance_km', 8, 2)->nullable();
+            $table->integer('index');
+            $table->string('set_type')->default('normal');
+            $table->decimal('weight_kg', 8, 2)->nullable();
+            $table->integer('reps')->nullable();
+            $table->decimal('distance_meters', 8, 2)->nullable();
             $table->integer('duration_seconds')->nullable();
-            $table->boolean('is_warmup')->default(false);
+            $table->integer('rpe')->nullable();
             $table->boolean('is_dropset')->default(false);
             $table->boolean('is_failed')->default(false);
             $table->text('notes')->nullable();

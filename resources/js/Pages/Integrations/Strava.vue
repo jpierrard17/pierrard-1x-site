@@ -70,7 +70,7 @@ const syncStravaData = async () => {
                             <PrimaryButton @click="disconnectStrava">
                                 Disconnect Strava
                             </PrimaryButton>
-                            <PrimaryButton @click="syncStravaData" :disabled="syncing">
+                            <PrimaryButton @click="syncStravaData" :disabled="syncing" type="button">
                                 <span v-if="syncing">Syncing...</span>
                                 <span v-else>Sync Now</span>
                             </PrimaryButton>

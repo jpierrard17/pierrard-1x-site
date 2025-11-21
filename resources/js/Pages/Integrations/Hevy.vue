@@ -126,7 +126,7 @@ onMounted(() => {
                             <PrimaryButton @click="disconnectHevy">
                                 Disconnect Hevy
                             </PrimaryButton>
-                            <PrimaryButton @click="fetchHevyData" :disabled="loading">
+                            <PrimaryButton @click="fetchHevyData" :disabled="loading" type="button">
                                 <span v-if="loading">Fetching Data...</span>
                                 <span v-else>Fetch Raw Data</span>
                             </PrimaryButton>
