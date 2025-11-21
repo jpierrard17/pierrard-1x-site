@@ -129,5 +129,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Dependencies:**
   - Installed Leaflet.js for interactive mapping
   - Installed polyline-encoded for Strava polyline decoding
+- **Strava visualization frontend:**
+  - Implemented 5 Chart.js visualizations (frequency, distance, elevation, activity types, pace)
+  - Added interactive Leaflet.js maps for individual activity routes
+  - Added heatmap view showing frequently-run routes (≥5 occurrences)
+  - Added activity list with click-to-view route functionality
+  - Integrated polyline decoding for Strava's encoded route data
+  - Applied unit conversions (km for distance, feet for elevation, min/km for pace)
 
 
