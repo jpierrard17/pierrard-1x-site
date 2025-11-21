@@ -252,4 +252,98 @@ class HevyService
             'data' => array_column($volumeData, 'volume'),
         ];
     }
+
+    /**
+     * Get list of all exercises the user has performed.
+     */
+    public function getAvailableExercises(): array
+    {
+        $exercises = \App\Modules\Hevy\Models\HevyWorkoutExercise::query()
+            ->join('hevy_exercise_templates', 'hevy_workout_exercises.exercise_template_id', '=', 'hevy_exercise_templates.id')
+            ->select('hevy_exercise_templates.id', 'hevy_exercise_templates.name', \DB::raw('COUNT(*) as count'))
+            ->groupBy('hevy_exercise_templates.id', 'hevy_exercise_templates.name')
+            ->orderByDesc('count')
+            ->get();
+
+        return $exercises->map(function ($exercise) {
+            return [
+                'id' => $exercise->id,
+                'name' => $exercise->name,
+                'count' => $exercise->count,
+            ];
+        })->toArray();
+    }
+
+    /**
+     * Get progress data for a specific exercise.
+     */
+    public function getExerciseProgressData(string $exerciseTemplateId): array
+    {
+        $workouts = \App\Modules\Hevy\Models\HevyWorkout::query()
+            ->whereHas('exercises', function ($query) use ($exerciseTemplateId) {
+                $query->where('exercise_template_id', $exerciseTemplateId);
+            })
+            ->with(['exercises' => function ($query) use ($exerciseTemplateId) {
+                $query->where('exercise_template_id', $exerciseTemplateId)
+                    ->with('sets');
+            }])
+            ->orderBy('start_time')
+            ->get();
+
+        $progressData = [];
+
+        foreach ($workouts as $workout) {
+            $maxWeight = 0;
+            $totalVolume = 0;
+            $maxEstimated1RM = 0;
+
+            foreach ($workout->exercises as $exercise) {
+                foreach ($exercise->sets as $set) {
+                    $weight = $set->weight_kg ?? 0;
+                    $reps = $set->reps ?? 0;
+
+                    // Track max weight
+                    if ($weight > $maxWeight) {
+                        $maxWeight = $weight;
+                    }
+
+                    // Calculate volume
+                    $totalVolume += $weight * $reps;
+
+                    // Calculate estimated 1RM (Epley formula)
+                    if ($weight > 0 && $reps > 0) {
+                        $estimated1RM = $this->calculateEstimated1RM($weight, $reps);
+                        if ($estimated1RM > $maxEstimated1RM) {
+                            $maxEstimated1RM = $estimated1RM;
+                        }
+                    }
+                }
+            }
+
+            // Convert kg to lbs for display (1 kg = 2.20462 lbs)
+            $progressData[] = [
+                'date' => $workout->start_time->format('Y-m-d'),
+                'maxWeight' => round($maxWeight * 2.20462, 2),
+                'volume' => round($totalVolume * 2.20462, 2),
+                'estimated1RM' => round($maxEstimated1RM * 2.20462, 2),
+            ];
+        }
+
+        return [
+            'labels' => array_column($progressData, 'date'),
+            'maxWeight' => array_column($progressData, 'maxWeight'),
+            'volume' => array_column($progressData, 'volume'),
+            'estimated1RM' => array_column($progressData, 'estimated1RM'),
+        ];
+    }
+
+    /**
+     * Calculate estimated 1RM using Epley formula.
+     */
+    private function calculateEstimated1RM(float $weight, int $reps): float
+    {
+        // Epley formula: weight × (1 + reps/30)
+        return $weight * (1 + ($reps / 30));
+    }
 }
+
