@@ -143,4 +143,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added error handling for polyline decoding
 - **Fixed backend to return polylines as proper JSON array using `values()` method**
 
+### Changed
+- Enhanced activity details display to show distance, moving time, pace, elevation gain, and heart rate metrics
+
 

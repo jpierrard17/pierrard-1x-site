@@ -361,7 +361,33 @@ onUnmounted(() => {
                                 </div>
                                 <div class="bg-gray-50 p-4 rounded-lg shadow">
                                     <div v-if="selectedActivity">
-                                        <h3 class="font-semibold mb-2">{{ selectedActivity.name }}</h3>
+                                        <h3 class="font-semibold text-lg mb-3">{{ selectedActivity.name }}</h3>
+                                        <div class="grid grid-cols-2 gap-2 mb-4 text-sm">
+                                            <div class="bg-white p-2 rounded">
+                                                <div class="text-gray-500">Distance</div>
+                                                <div class="font-semibold">{{ selectedActivity.distance }} km</div>
+                                            </div>
+                                            <div class="bg-white p-2 rounded">
+                                                <div class="text-gray-500">Moving Time</div>
+                                                <div class="font-semibold">{{ selectedActivity.movingTime }} min</div>
+                                            </div>
+                                            <div class="bg-white p-2 rounded" v-if="selectedActivity.pace">
+                                                <div class="text-gray-500">Pace</div>
+                                                <div class="font-semibold">{{ selectedActivity.pace }} min/km</div>
+                                            </div>
+                                            <div class="bg-white p-2 rounded" v-if="selectedActivity.elevationGain">
+                                                <div class="text-gray-500">Elevation</div>
+                                                <div class="font-semibold">{{ selectedActivity.elevationGain }} ft</div>
+                                            </div>
+                                            <div class="bg-white p-2 rounded" v-if="selectedActivity.averageHeartrate">
+                                                <div class="text-gray-500">Avg HR</div>
+                                                <div class="font-semibold">{{ Math.round(selectedActivity.averageHeartrate) }} bpm</div>
+                                            </div>
+                                            <div class="bg-white p-2 rounded" v-if="selectedActivity.maxHeartrate">
+                                                <div class="text-gray-500">Max HR</div>
+                                                <div class="font-semibold">{{ Math.round(selectedActivity.maxHeartrate) }} bpm</div>
+                                            </div>
+                                        </div>
                                         <div id="activity-map" class="h-80 rounded-lg"></div>
                                     </div>
                                     <div v-else class="h-80 flex items-center justify-center text-gray-500">

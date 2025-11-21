@@ -308,12 +308,21 @@ class StravaService
         }
 
         return $query->get()->map(function ($activity) {
+            $distanceKm = round($activity->distance / 1000, 2);
+            $movingTimeMinutes = round($activity->moving_time / 60, 1);
+            $paceMinPerKm = $distanceKm > 0 ? round($movingTimeMinutes / $distanceKm, 2) : null;
+            
             return [
                 'id' => $activity->id,
                 'name' => $activity->name,
                 'type' => $activity->type,
                 'date' => Carbon::parse($activity->start_date_local)->format('Y-m-d H:i'),
-                'distance' => round($activity->distance / 1000, 2), // km
+                'distance' => $distanceKm, // km
+                'movingTime' => $movingTimeMinutes, // minutes
+                'pace' => $paceMinPerKm, // min/km
+                'elevationGain' => round($activity->total_elevation_gain * 3.28084, 0), // feet
+                'averageHeartrate' => $activity->average_heartrate,
+                'maxHeartrate' => $activity->max_heartrate,
                 'polyline' => $activity->map_summary_polyline,
             ];
         })->toArray();
