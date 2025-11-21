@@ -2,6 +2,7 @@
 
 namespace App\Modules\Strava\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class StravaGear extends Model

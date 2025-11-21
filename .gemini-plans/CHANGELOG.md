@@ -52,6 +52,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `PLAN.md` to include PrimeVue in the technology stack.
 
 ### Added
+- Implemented Hevy data visualizations: Workout Frequency (bar chart) and Volume Progress (line chart).
+- Added `fetchChartData` endpoint to `HevyController` and aggregation methods to `HevyService`.
 - Installed `chart.js` dependency for Hevy data visualizations.
 - Updated `hevy-plan.md` with visualization strategy.
 
@@ -70,3 +72,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Resolved Ziggy error by explicitly naming the home route (`/`) as 'home' in `routes/web.php`.
 - Resolved `MYSQL_EXTRA_OPTIONS` warning in Sail by defining the variable in the `.env` and `.env.example` files.
 - Resolved Vite manifest error by correcting the main app entry file to `.ts` and fixing PrimeVue theme imports.
+- Fixed Hevy sync pagination by using `page`/`pageSize` parameters instead of `offset`/`limit` (API requirement).
+- Fixed Hevy API page indexing to start from page 0 (0-based indexing).
+- Fixed missing `HasFactory` trait imports in all Hevy models (`HevyWorkout`, `HevyWorkoutExercise`, `HevyWorkoutSet`, `HevyExerciseTemplate`).
+- Fixed missing `HasFactory` trait imports in Strava models (`StravaActivity`, `StravaGear`).
+- Fixed `HevyWorkoutSet` migration to make `weight_kg`, `reps`, `distance_meters`, `duration_seconds`, and `rpe` nullable (supports cardio/stretching exercises).
+- Fixed missing fillable fields in `HevyWorkoutSet` model (`index`, `set_type`, `distance_meters`, `rpe`).
+- Fixed date casting for `start_time` and `end_time` in `HevyWorkout` model.
+- Fixed foreign key constraint violation by auto-creating missing exercise templates during sync.
+- Fixed "Sync Now" button type to prevent page reloads in Hevy and Strava integration pages.
+
+### Added
+- Implemented `syncWorkouts` method in `HevyService` with delta sync logic (only fetches new workouts).
+- Added Strava access/refresh token accessors/mutators to `User` model.
+- Added Strava configuration to `config/services.php` and `.env.example`.
+- Created `StravaController` for Strava OAuth and data sync.
+- Created `StravaService` for Strava API interactions.
+
+### Changed
+- Refactored Hevy visualizations to query local database instead of calling API directly.
+- Updated Hevy sync to use page size of 10 (API maximum).
+

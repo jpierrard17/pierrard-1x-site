@@ -2,6 +2,7 @@
 
 namespace App\Modules\Hevy\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class HevyWorkout extends Model
@@ -18,6 +19,11 @@ class HevyWorkout extends Model
         'notes',
         'start_time',
         'end_time',
+    ];
+
+    protected $casts = [
+        'start_time' => 'datetime',
+        'end_time' => 'datetime',
     ];
 
     public function exercises()

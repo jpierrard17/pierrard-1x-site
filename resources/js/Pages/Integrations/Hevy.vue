@@ -5,8 +5,9 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
-import { defineProps, ref } from 'vue';
+import { defineProps, ref, onMounted } from 'vue';
 import axios from 'axios';
+import Chart from 'primevue/chart';
 
 const props = defineProps<{
     hevyConnected: boolean;
@@ -17,6 +18,7 @@ const form = useForm({
 });
 
 const hevyData = ref(null);
+const chartData = ref(null);
 const loading = ref(false);
 const fetchError = ref(null);
 
@@ -45,6 +47,51 @@ const fetchHevyData = async () => {
         loading.value = false;
     }
 };
+
+const fetchChartData = async () => {
+    try {
+        const response = await axios.get(route('integrations.hevy.fetch-chart-data'));
+        const data = response.data;
+
+        chartData.value = {
+            frequency: {
+                labels: data.frequency.labels,
+                datasets: [
+                    {
+                        label: 'Workouts per Month',
+                        backgroundColor: '#42A5F5',
+                        data: data.frequency.data
+                    }
+                ]
+            },
+            volume: {
+                labels: data.volume.labels,
+                datasets: [
+                    {
+                        label: 'Volume (kg)',
+                        borderColor: '#66BB6A',
+                        data: data.volume.data,
+                        fill: false,
+                        tension: 0.4
+                    }
+                ]
+            }
+        };
+    } catch (error) {
+        console.error('Error fetching chart data:', error);
+    }
+};
+
+const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+};
+
+onMounted(() => {
+    if (props.hevyConnected) {
+        fetchChartData();
+    }
+});
 </script>
 
 <template>
@@ -79,14 +126,29 @@ const fetchHevyData = async () => {
                             <PrimaryButton @click="disconnectHevy">
                                 Disconnect Hevy
                             </PrimaryButton>
-                            <PrimaryButton @click="fetchHevyData" :disabled="loading">
+                            <PrimaryButton @click="fetchHevyData" :disabled="loading" type="button">
                                 <span v-if="loading">Fetching Data...</span>
-                                <span v-else>Fetch Hevy Data</span>
+                                <span v-else>Fetch Raw Data</span>
                             </PrimaryButton>
                         </div>
 
                         <div v-if="fetchError" class="mb-4 font-medium text-sm text-red-600">
                             {{ fetchError }}
+                        </div>
+
+                        <div v-if="chartData" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                            <div class="bg-gray-50 p-4 rounded-lg shadow">
+                                <h3 class="text-lg font-semibold mb-4">Workout Frequency</h3>
+                                <div class="h-64">
+                                    <Chart type="bar" :data="chartData.frequency" :options="chartOptions" />
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 p-4 rounded-lg shadow">
+                                <h3 class="text-lg font-semibold mb-4">Volume Progress</h3>
+                                <div class="h-64">
+                                    <Chart type="line" :data="chartData.volume" :options="chartOptions" />
+                                </div>
+                            </div>
                         </div>
 
                         <div v-if="hevyData">

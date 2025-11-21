@@ -97,4 +97,49 @@ class User extends Authenticatable
             $this->settings()->where('key', 'hevy_api_key')->delete();
         }
     }
+    /**
+     * Get the Strava access token from settings.
+     */
+    public function getStravaAccessTokenAttribute(): ?string
+    {
+        return $this->settings()->where('key', 'strava_access_token')->value('value');
+    }
+
+    /**
+     * Set the Strava access token in settings.
+     */
+    public function setStravaAccessTokenAttribute(?string $value): void
+    {
+        if ($value) {
+            $this->settings()->updateOrCreate(
+                ['key' => 'strava_access_token'],
+                ['value' => $value, 'type' => 'token']
+            );
+        } else {
+            $this->settings()->where('key', 'strava_access_token')->delete();
+        }
+    }
+
+    /**
+     * Get the Strava refresh token from settings.
+     */
+    public function getStravaRefreshTokenAttribute(): ?string
+    {
+        return $this->settings()->where('key', 'strava_refresh_token')->value('value');
+    }
+
+    /**
+     * Set the Strava refresh token in settings.
+     */
+    public function setStravaRefreshTokenAttribute(?string $value): void
+    {
+        if ($value) {
+            $this->settings()->updateOrCreate(
+                ['key' => 'strava_refresh_token'],
+                ['value' => $value, 'type' => 'token']
+            );
+        } else {
+            $this->settings()->where('key', 'strava_refresh_token')->delete();
+        }
+    }
 }
